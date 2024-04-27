@@ -9,6 +9,13 @@ export interface AllPostsStoryblok {
   [k: string]: any;
 }
 
+export interface AllProjectsStoryblok {
+  projects?: ProjectStoryblok[];
+  _uid: string;
+  component: "all-projects";
+  [k: string]: any;
+}
+
 export interface AssetStoryblok {
   _uid?: string;
   id: number;
@@ -170,6 +177,7 @@ export interface NavItemStoryblok {
 export interface PageStoryblok {
   body?: (
     | AllPostsStoryblok
+    | AllProjectsStoryblok
     | AuthorStoryblok
     | CategoryStoryblok
     | ConfigStoryblok
@@ -178,6 +186,7 @@ export interface PageStoryblok {
     | NavItemStoryblok
     | PageStoryblok
     | PostStoryblok
+    | ProjectStoryblok
     | SeoStoryblok
     | SocialItemStoryblok
     | TagStoryblok
@@ -201,6 +210,16 @@ export interface PostStoryblok {
   seo?: SeoStoryblok[];
   _uid: string;
   component: "post";
+  [k: string]: any;
+}
+
+export interface ProjectStoryblok {
+  headline?: string;
+  image?: AssetStoryblok;
+  description?: string;
+  url?: Exclude<MultilinkStoryblok, {linktype?: "email"} | {linktype?: "asset"}>;
+  _uid: string;
+  component: "project";
   [k: string]: any;
 }
 
