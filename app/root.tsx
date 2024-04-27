@@ -30,7 +30,7 @@ import {
   Project,
   AllProjects
 } from "./components/bloks";
-import { implementSeo, invariantResponse } from "~/utils";
+import { implementSeo, invariantResponse, isPreview } from "~/utils";
 import { GeneralErrorBoundary } from "./components/GeneralErrorBoundary";
 
 const isServer = typeof window === "undefined";
@@ -128,6 +128,7 @@ storyblokInit({
   accessToken,
   use: [apiPlugin],
   components,
+  bridge: isPreview(),
 });
 
 export const links: LinksFunction = () => [
