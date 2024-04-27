@@ -27,6 +27,8 @@ import {
   Tag,
   LastPosts,
   Author,
+  Project,
+  AllProjects
 } from "./components/bloks";
 import { implementSeo, invariantResponse } from "~/utils";
 import { GeneralErrorBoundary } from "./components/GeneralErrorBoundary";
@@ -118,6 +120,8 @@ const components = {
   tag: Tag,
   "last-posts": LastPosts,
   author: Author,
+  project: Project,
+  "all-projects": AllProjects
 };
 
 storyblokInit({

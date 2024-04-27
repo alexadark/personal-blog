@@ -8,3 +8,5 @@ export * from "./Category";
 export * from "./Tag";
 export * from "./LastPosts";
 export * from "./Author";
+export * from "./Project";
+export * from "./AllProjects";
