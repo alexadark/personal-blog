@@ -1,17 +1,17 @@
-import { storyblokEditable } from "@storyblok/react";
-import { MDRenderer } from "~/utils";
+import { storyblokEditable } from '@storyblok/react'
+import { MDRenderer } from '~/utils'
 
-import type { ContentStoryblok } from "~/types";
+import type { ContentStoryblok } from '~/types'
 
 export const Content = ({ blok }: ContentStoryblok) => {
-  const { _uid, text } = blok;
+  const { _uid, text } = blok
   return (
-    <>
+    <div {...storyblokEditable(blok)}>
       {text && (
-        <MDRenderer {...storyblokEditable(blok)} key={_uid} className="content">
+        <MDRenderer key={_uid} className="content">
           {text}
         </MDRenderer>
       )}
-    </>
-  );
-};
+    </div>
+  )
+}
