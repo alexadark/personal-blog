@@ -3,7 +3,6 @@ import type { ProjectStoryblok } from "~/types";
 
 export const Project = ({ blok }: ProjectStoryblok) => {
   const { headline, image, description, url, _uid } = blok;
-  console.log("url", url);
 
   return (
     <article
@@ -11,7 +10,7 @@ export const Project = ({ blok }: ProjectStoryblok) => {
       {...storyblokEditable(blok)}
       key={_uid}
       itemScope
-      itemType="http://schema.org/BlogPosting"
+      itemType="http://schema.org/CreativeWork"
     >
       <a href={url.cached_url} target="_blank" rel="noopener noreferrer">
         <div>
