@@ -67,7 +67,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
   return json(
     {
-      blok: story.content,
+      blok: story,
       publishDate: story.published_at,
       id: story.id,
       name: story.name,
@@ -84,7 +84,7 @@ export let headers: HeadersFunction = ({ loaderHeaders }) => {
   return { "Cache-Control": loaderHeaders.get("Cache-Control") };
 };
 export const meta: MetaFunction = ({ data }: { data: any }) => {
-  console.log("data blok", data);
+
   const jsonLD =
     data.blok.component === "post"
       ? {

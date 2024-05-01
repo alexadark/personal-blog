@@ -1,10 +1,9 @@
-import { storyblokEditable } from "@storyblok/react";
+import { storyblokEditable, renderRichText } from "@storyblok/react";
 import type { ProjectStoryblok } from "~/types";
-import { MDRenderer } from "~/utils";
 
-export const Project = ({blok}: ProjectStoryblok) => {
-    const {headline, image, description, url, _uid} = blok;
-    console.log("url",url);
+export const Project = ({ blok }: ProjectStoryblok) => {
+  const { headline, image, description, url, _uid } = blok;
+  console.log("url", url);
 
   return (
     <article
@@ -14,9 +13,8 @@ export const Project = ({blok}: ProjectStoryblok) => {
       itemScope
       itemType="http://schema.org/BlogPosting"
     >
-
-    <a href={url.cached_url} target="_blank" rel="noopener noreferrer">
-        <div >
+      <a href={url.cached_url} target="_blank" rel="noopener noreferrer">
+        <div>
           {image && (
             <div
               className="flex items-center"
@@ -44,7 +42,10 @@ export const Project = ({blok}: ProjectStoryblok) => {
             <h2 className="font-bold text-2xl mb-2" itemProp="headline">
               {headline}
             </h2>
-            <MDRenderer className="list-disc">{description}</MDRenderer>
+            <div
+              className="list-disc"
+              dangerouslySetInnerHTML={{ __html: renderRichText(description) }}
+            ></div>
           </div>
         </div>
       </a>
