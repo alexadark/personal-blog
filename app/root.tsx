@@ -141,7 +141,7 @@ export const links: LinksFunction = () => [
 ];
 
 const Document = ({ children }: { children: React.ReactNode }) => {
-  const { googleAnalyticsCode } = useLoaderData<typeof loader>();
+  const { googleAnalyticsCode } = useLoaderData<typeof loader>() || {};
   return (
     <html lang="en">
       <head>
