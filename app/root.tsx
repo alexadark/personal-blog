@@ -3,7 +3,7 @@ import {
   type LinksFunction,
   type LoaderFunctionArgs,
   type MetaFunction,
-} from '@remix-run/node'
+} from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -12,10 +12,10 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
-} from '@remix-run/react'
-import styles from './styles/tailwind.css'
-import { storyblokInit, apiPlugin, getStoryblokApi } from '@storyblok/react'
-import { Layout } from './components/layout'
+} from "@remix-run/react";
+import styles from "./tailwind.css?url";
+import { storyblokInit, apiPlugin, getStoryblokApi } from "@storyblok/react";
+import { Layout } from "./components/layout";
 import {
   Page,
   SocialItem,
@@ -29,39 +29,39 @@ import {
   Author,
   Project,
   AllProjects,
-} from './components/bloks'
-import { implementSeo, invariantResponse, isPreview } from '~/utils'
-import { GeneralErrorBoundary } from './components/GeneralErrorBoundary'
+} from "./components/bloks";
+import { implementSeo, invariantResponse, isPreview } from "~/utils";
+import { GeneralErrorBoundary } from "./components/GeneralErrorBoundary";
 
-const isServer = typeof window === 'undefined'
+const isServer = typeof window === "undefined";
 
 const accessToken = isServer
   ? process.env.STORYBLOK_PREVIEW_TOKEN
   : //@ts-ignore
-    window.env.STORYBLOK_PREVIEW_TOKEN
+    window.env.STORYBLOK_PREVIEW_TOKEN;
 
 export const loader = async (args: LoaderFunctionArgs) => {
   invariantResponse(
     accessToken,
-    'You need to provide an access token to interact with Storyblok API.',
+    "You need to provide an access token to interact with Storyblok API.",
     {
       status: 401,
     }
-  )
-  const sbApi = getStoryblokApi()
+  );
+  const sbApi = getStoryblokApi();
   const { data: config } = await sbApi.get(`cdn/stories/config`, {
-    version: 'draft',
-    resolve_links: 'url',
-  })
+    version: "draft",
+    resolve_links: "url",
+  });
 
   const { data } = await sbApi.get(`cdn/stories/home`, {
-    version: 'draft',
-  })
+    version: "draft",
+  });
 
-  const story = data?.story
+  const story = data?.story;
   const seo = story?.content?.seo_plugin?.title
     ? story?.content?.seo_plugin
-    : story?.content?.seo[0]
+    : story?.content?.seo[0];
 
   const {
     logo,
@@ -75,7 +75,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     site_url,
     google_analytics_code,
     google_tag_manager,
-  } = config?.story?.content || {}
+  } = config?.story?.content || {};
 
   return json({
     env: {
@@ -93,55 +93,55 @@ export const loader = async (args: LoaderFunctionArgs) => {
     siteUrl: site_url,
     googleAnalyticsCode: google_analytics_code,
     googleTagManager: google_tag_manager,
-  })
-}
+  });
+};
 
 export const meta: MetaFunction = ({ data }: { data: any }) => {
   return [
     ...implementSeo(data?.seo, data?.blogTitle),
     {
-      'script:ld+json': {
-        '@context': 'https://schema.org',
-        '@type': 'Organization',
-        url: `${data.siteUrl ? data.siteUrl : ''}`,
+      "script:ld+json": {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        url: `${data.siteUrl ? data.siteUrl : ""}`,
       },
     },
-  ]
-}
+  ];
+};
 
 const components = {
   page: Page,
-  'social-item': SocialItem,
-  'nav-item': NavItem,
+  "social-item": SocialItem,
+  "nav-item": NavItem,
   content: Content,
-  'all-posts': AllPosts,
+  "all-posts": AllPosts,
   post: Post,
   category: Category,
   tag: Tag,
-  'last-posts': LastPosts,
+  "last-posts": LastPosts,
   author: Author,
   project: Project,
-  'all-projects': AllProjects,
-}
+  "all-projects": AllProjects,
+};
 
 storyblokInit({
   accessToken,
   use: [apiPlugin],
   components,
   bridge: true,
-})
+});
 
 export const links: LinksFunction = () => [
   {
-    rel: 'preload',
-    href: 'https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Inter:wght@400..700&display=swap',
-    as: 'style',
+    rel: "preload",
+    href: "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Inter:wght@400..700&display=swap",
+    as: "style",
   },
-  { rel: 'stylesheet', href: styles },
-]
+  { rel: "stylesheet", href: styles },
+];
 
 const Document = ({ children }: { children: React.ReactNode }) => {
-  const { googleAnalyticsCode } = useLoaderData<typeof loader>()
+  const { googleAnalyticsCode } = useLoaderData<typeof loader>();
   return (
     <html lang="en">
       <head>
@@ -172,11 +172,11 @@ const Document = ({ children }: { children: React.ReactNode }) => {
         <LiveReload />
       </body>
     </html>
-  )
-}
+  );
+};
 
 export default function App() {
-  const { env } = useLoaderData<typeof loader>()
+  const { env } = useLoaderData<typeof loader>();
   return (
     <Document>
       <Layout>
@@ -188,7 +188,7 @@ export default function App() {
         }}
       />
     </Document>
-  )
+  );
 }
 
 export function ErrorBoundary() {
@@ -207,5 +207,5 @@ export function ErrorBoundary() {
         />
       </div>
     </Document>
-  )
+  );
 }
