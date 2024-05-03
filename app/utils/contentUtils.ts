@@ -57,7 +57,7 @@ export const getContentData = async (
   const total = await getTotal(data);
 
   return {
-    blok: story.content,
+    blok: story,
     uuid: story.uuid,
     name: story.name,
     posts: postsByContentType?.stories.map((p: PostStoryblok) =>

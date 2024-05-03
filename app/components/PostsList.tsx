@@ -57,7 +57,11 @@ export const PostsList = ({ grid, uuid }: PostsListType) => {
     <div itemScope itemType="http://schema.org/CollectionPage">
       <div className={grid ? "grid sm:grid-cols-2 gap-5" : ""}>
         {posts?.map((p: PostStoryblok, index: number) => {
-          return <PostCard post={p} key={p?.id} grid={grid} />;
+          return (
+            <div key={p?.id} className="flex flex-col h-full">
+              <PostCard post={p} grid={grid} />
+            </div>
+          );
         })}
       </div>
       {total && posts.length < total && (
