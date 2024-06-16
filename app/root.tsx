@@ -138,6 +138,11 @@ export const links: LinksFunction = () => [
     as: "style",
   },
   { rel: "stylesheet", href: styles },
+  {
+    rel: "icon",
+    href: "/assets/favicon.png",
+    type: "image/png",
+  },
 ];
 
 const Document = ({ children }: { children: React.ReactNode }) => {
