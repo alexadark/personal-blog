@@ -58,9 +58,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   let total = await response?.headers.get("total");
   const story = data?.story;
 
-  const seo = story?.content?.seo_plugin?.title
-    ? story?.content?.seo_plugin
-    : story?.content?.seo[0];
+  const seo = story?.content?.seo[0];
   const noFollow = story?.content?.seo[0]?.no_follow;
 
   const posts = blog?.stories?.map((p: PostStoryblok) => getPostCardData(p));

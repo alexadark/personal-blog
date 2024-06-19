@@ -35,9 +35,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
   const story = data?.story;
 
-  const seo = story?.content?.seo_plugin?.title
-    ? story?.content?.seo_plugin
-    : story?.content?.seo[0];
+  const seo = story?.content?.seo[0];
 
   const page = Number.isNaN(Number(params.pageNumber))
     ? 1

@@ -59,9 +59,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   });
 
   const story = data?.story;
-  const seo = story?.content?.seo_plugin?.title
-    ? story?.content?.seo_plugin
-    : story?.content?.seo[0];
+  const seo =  story?.content?.seo[0];
 
   const {
     logo,

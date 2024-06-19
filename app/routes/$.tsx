@@ -53,9 +53,7 @@ export const loader: LoaderFunction = async ({
   })
   const story = data?.story
 
-  const seo = story?.content?.seo_plugin?.title
-    ? story?.content?.seo_plugin
-    : story?.content?.seo[0]
+  const seo =  story?.content?.seo[0]
   const noFollow = story?.content?.seo[0]?.no_follow
 
   return json(
