@@ -1,14 +1,16 @@
-import { useLoaderData, Link } from "@remix-run/react";
-import { getStoryblokApi } from "@storyblok/react";
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import type { StoryblokStory } from "storyblok-generate-ts";
-import type { PostStoryblok, PageStoryblok } from "~/types";
+import { useLoaderData, Link } from '@remix-run/react';
+import { getStoryblokApi } from '@storyblok/react';
+import type { LoaderFunctionArgs } from '@remix-run/node';
+import type { StoryblokStory } from 'storyblok-generate-ts';
+import type { PostStoryblok, PageStoryblok } from '~/types';
 
-import { PostCard } from "~/components/PostCard";
+import { PostCard } from '~/components/PostCard';
+import { isPreview } from '~/utils/isPreview';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const version = isPreview() ? 'draft' : 'published';
   const url = new URL(request.url);
-  const query = url.searchParams.get("query");
+  const query = url.searchParams.get('query');
   const filter_query = {
     __or: [
       {
@@ -28,13 +30,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       },
     ],
   };
-  const resolveRelations = ["post.categories"];
-  const { data } = await getStoryblokApi().get(`cdn/stories`, {
-    version: "draft",
-    filter_query,
-    is_startpage: false,
-    resolve_relations: resolveRelations,
-  });
+  const resolveRelations = ['post.categories'];
+  const { data } = await getStoryblokApi().get(
+    `cdn/stories`,
+    {
+      version,
+      filter_query,
+      is_startpage: false,
+      resolve_relations: resolveRelations,
+    },
+    { cache: 'no-store' }
+  );
   return { stories: data.stories };
 };
 
@@ -42,10 +48,10 @@ const SearchResults = () => {
   const { stories } = useLoaderData<typeof loader>();
 
   const pagesResults = stories.filter(
-    (s: StoryblokStory<any>) => s.content.component === "page"
+    (s: StoryblokStory<any>) => s.content.component === 'page'
   );
   const postsResults = stories.filter(
-    (s: StoryblokStory<any>) => s.content.component === "post"
+    (s: StoryblokStory<any>) => s.content.component === 'post'
   );
 
   if (stories.length === 0) return <h1>No results found</h1>;

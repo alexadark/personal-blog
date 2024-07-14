@@ -4,57 +4,67 @@ import {
   type MetaFunction,
   type LoaderFunctionArgs,
   type LoaderFunction,
-} from '@remix-run/node'
-import { getStoryblokApi } from '@storyblok/react'
-import { useStoryblokData } from '~/hooks'
-import { implementSeo, getPostCardData, invariantResponse } from '~/utils'
-import type { PostStoryblok } from '~/types'
-import { useParams } from '@remix-run/react'
-import { GeneralErrorBoundary } from '~/components/GeneralErrorBoundary'
-import { NotFoundPage } from '~/components/NotFoundPage'
-import { cacheControl } from '~/utils/cacheControl'
+} from '@remix-run/node';
+import { getStoryblokApi } from '@storyblok/react';
+import { useStoryblokData } from '~/hooks';
+import { implementSeo, getPostCardData, invariantResponse } from '~/utils';
+import type { PostStoryblok } from '~/types';
+import { useParams } from '@remix-run/react';
+import { GeneralErrorBoundary } from '~/components/GeneralErrorBoundary';
+import { NotFoundPage } from '~/components/NotFoundPage';
+import { cacheControl, isPreview } from '~/utils';
 
 export const loader: LoaderFunction = async ({
   params,
   request,
 }: LoaderFunctionArgs) => {
-  let slug = params['*'] ?? 'home'
-  let url = new URL(request.url)
-  url = url.href // This gives you the full URL string
+  let slug = params['*'] ?? 'home';
+  let url = new URL(request.url);
+  url = url.href; // This gives you the full URL string
 
-  const sbApi = getStoryblokApi()
+  const version = isPreview() ? 'draft' : 'published';
 
-  const resolveRelations = ['post.categories']
+  const sbApi = getStoryblokApi();
+
+  const resolveRelations = ['post.categories'];
 
   const { data }: { data: any } = await sbApi
-    .get(`cdn/stories/${slug}`, {
-      version: 'draft',
-    })
+    .get(
+      `cdn/stories/${slug}`,
+      {
+        version,
+      },
+      { cache: 'no-store' }
+    )
     .catch((e) => {
-      console.log('e', e)
-      return { data: null }
-    })
+      console.log('e', e);
+      return { data: null };
+    });
   invariantResponse(data, `there is no page with slug ${slug}`, {
     status: 404,
-  })
+  });
   let headers = {
     ...cacheControl,
-  }
+  };
   const numberOfPosts = data.story.content.body?.find(
     (item: { component: string }) => item.component === 'last-posts'
-  )?.number_of_posts
+  )?.number_of_posts;
 
-  const { data: lastPosts } = await sbApi.get(`cdn/stories`, {
-    version: 'draft',
-    starts_with: 'blog/',
-    per_page: numberOfPosts,
-    is_startpage: false,
-    resolve_relations: resolveRelations,
-  })
-  const story = data?.story
+  const { data: lastPosts } = await sbApi.get(
+    `cdn/stories`,
+    {
+      version,
+      starts_with: 'blog/',
+      per_page: numberOfPosts,
+      is_startpage: false,
+      resolve_relations: resolveRelations,
+    },
+    { cache: 'no-store' }
+  );
+  const story = data?.story;
 
-  const seo =  story?.content?.seo[0]
-  const noFollow = story?.content?.seo[0]?.no_follow
+  const seo = story?.content?.seo[0];
+  const noFollow = story?.content?.seo[0]?.no_follow;
 
   return json(
     {
@@ -68,16 +78,16 @@ export const loader: LoaderFunction = async ({
       noFollow,
     },
     { headers }
-  )
-}
+  );
+};
 
 export let headers: HeadersFunction = ({ loaderHeaders }) => {
-  return { 'Cache-Control': loaderHeaders.get('Cache-Control') }
-}
+  return { 'Cache-Control': loaderHeaders.get('Cache-Control') };
+};
 
 export const meta: MetaFunction = ({ data }: { data: any }) => {
   if (!data) {
-    return []
+    return [];
   }
   return [
     ...implementSeo(data?.seo, data?.name),
@@ -92,18 +102,18 @@ export const meta: MetaFunction = ({ data }: { data: any }) => {
       name: 'robots',
       content: 'noindex, nofollow',
     },
-  ]
-}
+  ];
+};
 
 const RootPage = () => {
-  const params = useParams()
-  const routeFile = params['*'] === undefined ? 'routes/_index' : 'routes/$'
-  const data = useStoryblokData(routeFile)
+  const params = useParams();
+  const routeFile = params['*'] === undefined ? 'routes/_index' : 'routes/$';
+  const data = useStoryblokData(routeFile);
 
-  return data
-}
+  return data;
+};
 
-export default RootPage
+export default RootPage;
 
 export function ErrorBoundary() {
   return (
@@ -112,5 +122,5 @@ export function ErrorBoundary() {
         404: () => <NotFoundPage />,
       }}
     />
-  )
+  );
 }

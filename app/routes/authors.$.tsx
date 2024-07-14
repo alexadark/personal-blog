@@ -1,32 +1,38 @@
-import { GeneralErrorBoundary } from "~/components/GeneralErrorBoundary";
-import { NotFoundPage } from "~/components/NotFoundPage";
-import { useStoryblokData } from "~/hooks";
+import { GeneralErrorBoundary } from '~/components/GeneralErrorBoundary';
+import { NotFoundPage } from '~/components/NotFoundPage';
+import { useStoryblokData } from '~/hooks';
 import {
   json,
   type HeadersFunction,
   type LoaderFunctionArgs,
-} from "@remix-run/node";
-import { getStoryblokApi } from "@storyblok/react";
-import type { PostStoryblok } from "~/types";
+} from '@remix-run/node';
+import { getStoryblokApi } from '@storyblok/react';
+import type { PostStoryblok } from '~/types';
 import {
   getPerPage,
   getPostCardData,
   getTotal,
   invariantResponse,
   cacheControl,
-} from "~/utils";
+  isPreview,
+} from '~/utils';
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const slug = params["*"] ?? "home";
+  const slug = params['*'] ?? 'home';
   const sbApi = getStoryblokApi();
-  const resolveRelations = ["post.categories", "post.tags", "post.author"];
+  const resolveRelations = ['post.categories', 'post.tags', 'post.author'];
+  const version = isPreview() ? 'draft' : 'published';
 
   const { data } = await sbApi
-    .get(`cdn/stories/authors/${slug}`, {
-      version: "draft",
-    })
+    .get(
+      `cdn/stories/authors/${slug}`,
+      {
+        version,
+      },
+      { cache: 'no-store' }
+    )
     .catch((e) => {
-      console.log("e", e);
+      console.log('e', e);
       return { data: null };
     });
   invariantResponse(data, `there is no page with slug ${slug}`, {
@@ -35,7 +41,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
   const story = data?.story;
 
-  const seo =  story?.content?.seo[0];
+  const seo = story?.content?.seo[0];
 
   const page = Number.isNaN(Number(params.pageNumber))
     ? 1
@@ -43,15 +49,19 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
   const perPage = await getPerPage(sbApi);
 
-  const { data: postsByContentType } = await sbApi.get(`cdn/stories/`, {
-    version: "draft",
-    starts_with: "blog/",
-    is_startpage: false,
-    per_page: perPage,
-    page,
-    resolve_relations: resolveRelations,
-    search_term: data.story.uuid,
-  });
+  const { data: postsByContentType } = await sbApi.get(
+    `cdn/stories/`,
+    {
+      version,
+      starts_with: 'blog/',
+      is_startpage: false,
+      per_page: perPage,
+      page,
+      resolve_relations: resolveRelations,
+      search_term: data.story.uuid,
+    },
+    { cache: 'no-store' }
+  );
 
   const total = await getTotal(data);
 
@@ -76,10 +86,10 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 };
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
-  return { "Cache-Control": loaderHeaders.get("Cache-Control") };
+  return { 'Cache-Control': loaderHeaders.get('Cache-Control') };
 };
 
-const CategoryPage = () => useStoryblokData("routes/authors.$");
+const CategoryPage = () => useStoryblokData('routes/authors.$');
 
 export default CategoryPage;
 
