@@ -21,8 +21,10 @@ export const loader: LoaderFunction = async ({
   let slug = params['*'] ?? 'home';
   let url = new URL(request.url);
   url = url.href; // This gives you the full URL string
+  console.log('isPreview', isPreview());
 
   const version = isPreview() ? 'draft' : 'published';
+  console.log('version', version);
 
   const sbApi = getStoryblokApi();
 
