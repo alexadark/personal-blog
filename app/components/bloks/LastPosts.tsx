@@ -1,8 +1,8 @@
-import { storyblokEditable } from "@storyblok/react";
-import { useLoaderData, Link } from "@remix-run/react";
-import type { LastPostsStoryblok, PostStoryblok } from "~/types";
-import { PostCard } from "~/components/PostCard";
-import type { loader } from "~/routes/$";
+import { storyblokEditable } from '@storyblok/react';
+import { useLoaderData, Link } from '@remix-run/react';
+import type { LastPostsStoryblok, PostStoryblok } from '~/types';
+import { PostCard } from '~/components/PostCard';
+import type { loader } from '~/routes/$';
 
 export const LastPosts = ({ blok }: LastPostsStoryblok) => {
   const { headline, grid } = blok;
@@ -15,8 +15,8 @@ export const LastPosts = ({ blok }: LastPostsStoryblok) => {
       itemScope
       itemType="http://schema.org/ItemList"
     >
-      <h2>{headline}</h2>
-      <div className={grid && "grid sm:grid-cols-2 gap-5"}>
+      <h2 className="mt-8">{headline}</h2>
+      <div className={grid && 'grid sm:grid-cols-2 gap-5'}>
         {lastPosts.map((post: PostStoryblok, index: number) => {
           return (
             <div
